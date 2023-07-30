@@ -64,7 +64,9 @@ private const val TAG = "StudentDetailScreen"
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun StudentDetailScreen() {
+fun StudentDetailScreen(
+    onNavigateBack: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -74,7 +76,7 @@ fun StudentDetailScreen() {
     ) {
         val context = LocalContext.current
         val viewModel = hiltViewModel<StudentDetailViewModel>()
-        val studentState =  viewModel.studentState.value
+        val studentState = viewModel.studentState.value
         val listOfCourse = viewModel.listOfCourse
         val scope = rememberCoroutineScope()
         val selectedCourse = remember {
@@ -102,12 +104,14 @@ fun StudentDetailScreen() {
             SubjectList(selectedCourse.value, listOfCourse)
             Spacer(modifier = Modifier.height(20.dp))
             SaveDetails(onClick = {
-                if (!studentState.name.equals("")){
+                if (!studentState.name.equals("")) {
                     scope.launch(Dispatchers.IO) {
                         viewModel.insertStudentInfo()
+                        onNavigateBack()
                     }
-                }else{
-                    Toast.makeText(context,"Student Name Should not empty",Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Student Name Should not empty", Toast.LENGTH_SHORT)
+                        .show()
                 }
             })
         }
@@ -238,13 +242,13 @@ fun ListSubject(item: StudentDetailState) {
         TextField(
             value = item.marks.value.toString(),
             onValueChange = {
-               try {
-                   if(it.toInt() <= 100) {
-                       item.marks.value = it.toInt()
-                   }
-               }catch (e: NumberFormatException){
-                   Log.e(TAG, e.printStackTrace().toString() )
-               }
+                try {
+                    if (it.toInt() <= 100) {
+                        item.marks.value = it.toInt()
+                    }
+                } catch (e: NumberFormatException) {
+                    Log.e(TAG, e.printStackTrace().toString())
+                }
             },
             label = { Text(text = "marks") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -270,5 +274,5 @@ fun SaveDetails(onClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun StudentDetailScreenPreview() {
-    StudentDetailScreen()
+    StudentDetailScreen(onNavigateBack = {})
 }

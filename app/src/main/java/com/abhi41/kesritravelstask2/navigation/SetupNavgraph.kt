@@ -28,7 +28,11 @@ fun SetupNavGraph(
         composable(
             route = Screen.StudentDetail.route
         ){
-            StudentDetailScreen()
+            StudentDetailScreen(
+                onNavigateBack = {
+                    navController.navigate(Screen.Students.route)
+                }
+            )
         }
     }
 }

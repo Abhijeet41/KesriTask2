@@ -49,7 +49,7 @@ fun StudentInfoScreen(
 ) {
     val viewModel: StudentInfoViewModel = hiltViewModel()
     val listOfStudents = viewModel.readStudentList.value.studentList
-    
+
     Scaffold(
         floatingActionButton = { FloatingButton(onNavigationListener) }
     ) {
